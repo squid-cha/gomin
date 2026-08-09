@@ -1,122 +1,41 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import React, { useState } from 'react';
+import Page1_Splash from './components/Page1_Splash';
+import Page2_Input from './components/Page2_Input';
+import Page3_Loading from './components/Page3_Loading';
+import Page4_TastingNote from './components/Page4_TastingNote';
+import Page5_Receipt from './components/Page5_Receipt';
+import { MOCK_TASTING_NOTE } from './mockData'; // 또는 가짜 데이터 직접 전달
 
 function App() {
-  const [count, setCount] = useState(0)
+  // 1 ~ 5 단계 페이지 전환 상태
+  const [step, setStep] = useState(1);
+
+  // 다음 페이지로 이동하는 함수
+  const handleNext = () => setStep((prev) => prev + 1);
+
+  // 처음으로 돌아가는 함수
+  const handleReset = () => setStep(1);
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center justify-center p-4">
+      {/* 모바일 뷰 감싸기 (가로 390px 표준) */}
+      <div className="w-full max-w-sm min-h-[700px] bg-black rounded-3xl p-6 flex flex-col justify-between shadow-2xl border border-gray-800">
 
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
+        {/* 상단 스텝 표시기 (개발 확인용) */}
+        <div className="text-xs text-gray-500 text-center mb-4">
+          현재 단계: {step} / 5
         </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+        {/* step 값에 따른 조건부 화면 렌더링 */}
+        {step === 1 && <Page1_Splash onNext={handleNext} />}
+        {step === 2 && <Page2_Input onNext={handleNext} />}
+        {step === 3 && <Page3_Loading onNext={handleNext} />}
+        {step === 4 && <Page4_TastingNote onNext={handleNext} data={MOCK_TASTING_NOTE} />}
+        {step === 5 && <Page5_Receipt onReset={handleReset} />}
+
+      </div>
+    </div>
+  );
 }
 
-export default App
+export default App;
