@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Page1_Splash from './components/Page1_Splash';
+import ExtraPage1 from './components/ExtraPage1';
 import Page2_Input from './components/Page2_Input';
 import Page3_Loading from './components/Page3_Loading';
 import Page4_TastingNote from './components/Page4_TastingNote';
@@ -23,15 +24,17 @@ function App() {
 
         {/* 상단 스텝 표시기 (개발 확인용) */}
         <div className="text-xs text-gray-500 text-center mb-4">
-          현재 단계: {step} / 5
+          현재 단계: {step} / 6
         </div>
 
         {/* step 값에 따른 조건부 화면 렌더링 */}
+        {/* step 값에 따른 조건부 화면 렌더링 */}
         {step === 1 && <Page1_Splash onNext={handleNext} />}
-        {step === 2 && <Page2_Input onNext={handleNext} />}
-        {step === 3 && <Page3_Loading onNext={handleNext} />}
-        {step === 4 && <Page4_TastingNote onNext={handleNext} data={MOCK_TASTING_NOTE} />}
-        {step === 5 && <Page5_Receipt onReset={handleReset} />}
+        {step === 2 && <ExtraPage1 onNext={handleNext} />}
+        {step === 3 && <Page2_Input onNext={handleNext} />}
+        {step === 4 && <Page3_Loading onNext={handleNext} />}
+        {step === 5 && <Page4_TastingNote onNext={handleNext} data={MOCK_TASTING_NOTE} />}
+        {step === 6 && <Page5_Receipt onReset={handleReset} />}
 
       </div>
     </div>
