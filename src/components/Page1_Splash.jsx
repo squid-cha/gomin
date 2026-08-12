@@ -22,20 +22,20 @@ function Page1_Splash({ onNext }) {
             <div style={{ width: 81, height: 71, left: 319, top: 143, position: 'absolute', background: '#FFD20B', borderRadius: 10 }} />
 
             {/* 중앙 로고 아이콘 상자 */}
-            <div style={{ width: 110, height: 110, left: 135, top: 232, position: 'absolute', background: 'white', borderRadius: 30 }} />
-            <div style={{ width: 136, left: 122, top: 257, position: 'absolute', textAlign: 'center', justifyContent: 'center', display: 'flex', flexDirection: 'column', color: '#AE8E00', fontSize: 26, fontFamily: 'Noto Sans KR', fontWeight: '700', lineHeight: '30px', wordWrap: 'break-word' }}>
+            <div style={{ width: 110, height: 110, left: 125, top: 232, position: 'absolute', background: 'white', borderRadius: 30 }} />
+            <div style={{ width: 136, left: 112, top: 257, position: 'absolute', textAlign: 'center', justifyContent: 'center', display: 'flex', flexDirection: 'column', color: '#AE8E00', fontSize: 26, fontFamily: 'Noto Sans KR', fontWeight: '700', lineHeight: '30px', wordWrap: 'break-word' }}>
                 고민<br />미식회
             </div>
 
             {/* 메인 문구 영역 */}
-            <div style={{ width: 452, left: -36, top: 385, position: 'absolute', textAlign: 'center', justifyContent: 'center', display: 'flex', flexDirection: 'column', color: 'black', fontSize: 16, fontFamily: 'Noto Sans KR', fontWeight: '400', lineHeight: '30px', wordWrap: 'break-word' }}>
+            <div style={{ width: 452, left: -46, top: 385, position: 'absolute', textAlign: 'center', justifyContent: 'center', display: 'flex', flexDirection: 'column', color: 'black', fontSize: 16, fontFamily: 'Noto Sans KR', fontWeight: '400', lineHeight: '30px', wordWrap: 'break-word' }}>
                 오늘, 당신의 고민은 어떤 맛인가요?<br /> 갈팡질팡하는 당신을 위해<br />준비한 오늘의 만찬!
             </div>
 
             {/* 하단 시작하기 버튼 (클릭 시 onNext 실행) */}
             <div
                 onClick={onNext}
-                style={{ width: 292, height: 49, left: 44, top: 552, position: 'absolute', background: 'white', borderRadius: 15, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                style={{ width: 292, height: 49, left: 34, top: 552, position: 'absolute', background: 'white', borderRadius: 15, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
             >
                 <div style={{ textAlign: 'center', color: '#AE8E00', fontSize: 26, fontFamily: 'Noto Sans KR', fontWeight: '700', lineHeight: '30px', wordWrap: 'break-word' }}>
                     Get Started
