@@ -35,9 +35,15 @@ export default function Page3_Menu({ userData = {}, onNext }) {
     };
 
     // 최종 메뉴 주문 후 다음 영수증 단계로 이동
-    const handleSelectOrder = (selectedOptionTitle) => {
+    const handleSelectOrder = () => {
         if (onNext) {
-            onNext(selectedOptionTitle);
+            // detailData.doPamineRate ('85%' -> 85) 문자열을 숫자로 파싱
+            const brainMeltNum = parseInt(detailData.doPamineRate, 10) || 85;
+
+            onNext({
+                selectedOption: detailData.title,
+                brainMelt: brainMeltNum
+            });
         }
     };
 
@@ -138,7 +144,7 @@ export default function Page3_Menu({ userData = {}, onNext }) {
                 <>
                     {/* [고정] 상단 타이틀 */}
                     <div style={{ width: 171, left: 94, top: 205, position: 'absolute', textAlign: 'center', color: 'black', fontSize: 26, fontFamily: 'Noto Sans KR', fontWeight: '500', lineHeight: '16px', zIndex: 10 }}>
-                        {isLight ? "메뉴판" : "셰프의 메뉴판"}
+                        {isLight ? "메뉴판" : "메뉴판"}
                     </div>
 
                     {/* 📜 메뉴 목록 전체 스크롤 영역 (top: 245 ~ top: 780) */}

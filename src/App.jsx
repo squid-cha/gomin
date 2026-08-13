@@ -8,7 +8,7 @@ import ExtraPage3 from './components/ExtraPage3';   // 무거운 고민 1번째 
 import ExtraPage3_1 from './components/ExtraPage3_2'; // 무거운 고민 2번째 브릿지
 import Page3_Menu from './components/Page3_Menu';     // 메뉴판 (상세보기 버튼 포함)
 //import Page4_Detail from './components/Page4_Menu'; // 메뉴 상세보기
-import Page5_Receipt from './components/Page5_Receipt';
+import Page4_Receipt from './components/Page4_Receipt';
 
 function App() {
   // 1. 현재 화면 단계 관리
@@ -72,16 +72,24 @@ function App() {
         {step === 6 && <ExtraPage3 onNext={handleNext} />}
         {step === 7 && <ExtraPage3_1 onNext={() => setStep(8)} />}
 
-        {/* 8. 메뉴판 화면 (worryType 전달받아 배경 전환) */}
+        {/* 8. 메뉴판 화면 (worryType 전달받아 배경 전환 및 선택 메뉴 데이터 수신) */}
         {step === 8 && (
           <Page3_Menu
             userData={userData}
-            onNext={handleNext}
+            onNext={(selectedData) => {
+              // selectedData = { selectedOption: '선택한 메뉴명', brainMelt: 숫자수치 }
+              setUserData((prev) => ({
+                ...prev,
+                selectedOption: selectedData.selectedOption,
+                brainMelt: selectedData.brainMelt
+              }));
+              setStep(9); // 바로 Page4_Receipt(영수증) 단계로 이동
+            }}
           />
         )}
 
         {/* 9. 메뉴 상세보기 (Page4) */}
-        {step === 9 && (
+        {/*step === 9 && (
           <Page4_Detail
             userData={userData}
             onNext={(selected) => {
@@ -89,11 +97,11 @@ function App() {
               setStep(10);
             }}
           />
-        )}
+        )*/}
 
         {/* 10. 영수증 및 공유하기 (Page5) */}
-        {step === 10 && (
-          <Page5_Receipt
+        {step === 9 && (
+          <Page4_Receipt
             userData={userData}
             onReset={handleReset}
           />
