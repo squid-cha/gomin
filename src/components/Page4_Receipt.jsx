@@ -9,6 +9,11 @@ export default function Page4_Receipt({ userData = {}, onReset }) {
     const isLight = userData?.worryType === 'light';
     const bgImage = isLight ? bgLight : bgHeavy;
 
+    // 닉네임 fallback 처리
+    const userDisplayName = userData?.nickname?.trim()
+        ? `${userData.nickname}님`
+        : '당신';
+
     // 유저 데이터 fallback
     const optionA = userData?.optionA || '마라탕';
     const optionB = userData?.optionB || '샐러드';
@@ -48,6 +53,10 @@ export default function Page4_Receipt({ userData = {}, onReset }) {
     } else if (brainMeltValue < 70) {
         gaugeColor = '#F97316'; // 주황색
     }
+
+    // 🎯 선택된 메뉴 글자 길이에 따른 하단 첫째 줄 동적 폰트 크기 계산
+    const cheerFirstLine = `${selectedMenu} 완벽 정산 완료!`;
+    const cheerFontSize = cheerFirstLine.length <= 13 ? 15 : cheerFirstLine.length <= 16 ? 13.5 : 12;
 
     // 저장/공유 핸들러
     const handleSaveImage = () => {
@@ -115,8 +124,14 @@ export default function Page4_Receipt({ userData = {}, onReset }) {
                     <div style={{ width: 247, height: 0, margin: '8px auto 5px auto', outline: '1px black solid', outlineOffset: '-0.50px' }} />
                     <div style={{ width: 247, height: 0, margin: '1px auto 12px auto', outline: '1px black solid', outlineOffset: '-0.50px' }} />
 
-                    <div style={{ textAlign: 'center', color: 'black', fontSize: 18, fontFamily: 'Noto Sans KR', fontWeight: '500', lineHeight: '1.4' }}>
-                        당신의 고민이 정산되었습니다
+                    {/* 닉네임 2줄 레이아웃 */}
+                    <div style={{ textAlign: 'center', color: 'black', fontSize: 17, fontFamily: 'Noto Sans KR', fontWeight: '500', lineHeight: '1.4' }}>
+                        <div style={{ wordBreak: 'break-word' }}>
+                            {userDisplayName}의
+                        </div>
+                        <div style={{ marginTop: 2 }}>
+                            고민이 정산되었습니다
+                        </div>
                     </div>
 
                     <div style={{ width: 247, height: 0, margin: '12px auto 12px auto', outline: '1px black dashed', outlineOffset: '-0.50px' }} />
@@ -178,7 +193,7 @@ export default function Page4_Receipt({ userData = {}, onReset }) {
                         주문 완료 및 영수증
                     </div>
 
-                    {/* 🎯 변경된 부분: 주문 완료 및 결제 완료 박스 */}
+                    {/* 주문 완료 및 결제 완료 박스 */}
                     <div
                         style={{
                             width: 230,
@@ -205,13 +220,35 @@ export default function Page4_Receipt({ userData = {}, onReset }) {
                         당신의 선택을 응원합니다. 환불 불가!
                     </div>
 
-                    <div style={{ textAlign: 'center', color: 'black', fontSize: 15, fontFamily: 'Noto Sans KR', fontWeight: '400', lineHeight: '1.4', marginTop: '8px', wordBreak: 'break-word' }}>
-                        “자, {selectedMenu} 맛있게 먹고 오늘도 화이팅!”
+                    {/* 🎯 2줄 분리 및 메뉴 길이에 따른 유동적 폰트 크기 적용 */}
+                    <div
+                        style={{
+                            textAlign: 'center',
+                            color: 'black',
+                            fontFamily: 'Noto Sans KR',
+                            fontWeight: '400',
+                            lineHeight: '1.4',
+                            marginTop: '8px'
+                        }}
+                    >
+                        <div
+                            style={{
+                                fontSize: cheerFontSize,
+                                whiteSpace: 'nowrap',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis'
+                            }}
+                        >
+                            {cheerFirstLine}
+                        </div>
+                        <div style={{ fontSize: 14, color: '#333333', marginTop: 2 }}>
+                            마음 편히 즐기세요.
+                        </div>
                     </div>
 
                     {/* 스탬프 & 바코드 */}
                     <div style={{ position: 'relative', marginTop: '20px', minHeight: '50px' }}>
-                        <div style={{ position: 'absolute', right: 0, top: -10, transform: 'rotate(-8deg)', transformOrigin: 'top left', borderRadius: 5, border: '1px #CA0000 solid', padding: '2px 8px', color: '#CA0000', fontSize: 15, fontFamily: 'Noto Sans KR', fontWeight: '500', zIndex: 2 }}>
+                        <div style={{ position: 'absolute', right: 0, top: 40, transform: 'rotate(-8deg)', transformOrigin: 'top left', borderRadius: 5, border: '1px #CA0000 solid', padding: '2px 8px', color: '#CA0000', fontSize: 15, fontFamily: 'Noto Sans KR', fontWeight: '500', zIndex: 2 }}>
                             환불불가
                         </div>
 
