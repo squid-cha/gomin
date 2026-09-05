@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Page1_Splash from './components/Page1_Splash';
 import ExtraPage1 from './components/ExtraPage1';
 import Page2_Input from './components/Page2_Input';
@@ -6,47 +6,96 @@ import ExtraPage2 from './components/ExtraPage2';
 import ExtraPage2_1 from './components/ExtraPage2_2'; // 가벼운 고민 2번째 브릿지
 import ExtraPage3 from './components/ExtraPage3';   // 무거운 고민 1번째 브릿지
 import ExtraPage3_1 from './components/ExtraPage3_2'; // 무거운 고민 2번째 브릿지
-import Page3_Menu from './components/Page3_Menu';     // 메뉴판 (상세보기 버튼 포함)
-//import Page4_Detail from './components/Page4_Menu'; // 메뉴 상세보기
+import Page3_Menu from './components/Page3_Menu';     // 메뉴판
 import Page4_Receipt from './components/Page4_Receipt';
+
+// 🤖 실제 AI 서비스 함수 import
+import { getTastingAnalysis } from './services/aiService';
 
 function App() {
   // 1. 현재 화면 단계 관리
   const [step, setStep] = useState(1);
 
-  // 2. 유저가 입력한 고민 데이터 및 고민 무게(light / heavy) 관리
+  // 2. 공유 링크로 들어온 방문자(B)인지 여부 플래그
+  const [isSharedView, setIsSharedView] = useState(false);
+
+  // 3. 유저가 입력한 고민 데이터 및 결과 관리
   const [userData, setUserData] = useState({
     nickname: '',
-    worryType: 'light', // 'light' (가벼운 고민) or 'heavy' (무거운 고민)
+    worryType: 'light',
     optionA: '',
     optionB: '',
-    selectedOption: null // Page4에서 선택한 최종 메뉴
+    selectedOption: null,
+    brainMelt: 85,
+    tasteSummary: '',
+    aiResult: null // 👈 AI가 생성한 분석 결과 보관함
   });
+
+  // 🔗 🎯 B가 공유 링크를 타고 들어왔을 때 URL 파라미터 감지 및 영수증(step 9) 직행
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('shared') === 'true') {
+      const sharedData = {
+        nickname: params.get('name') || '친구',
+        optionA: params.get('optA') || '메뉴A',
+        optionB: params.get('optB') || '메뉴B',
+        selectedOption: params.get('selected') || params.get('optA') || '메뉴A',
+        brainMelt: params.get('melt') ? Number(params.get('melt')) : 85,
+        worryType: params.get('type') || 'light'
+      };
+
+      setUserData((prev) => ({ ...prev, ...sharedData }));
+      setIsSharedView(true);
+      setStep(9); // 바로 Page4_Receipt 단계로 이동
+    }
+  }, []);
 
   // 다음 단계 이동 함수
   const handleNext = () => setStep((prev) => prev + 1);
 
   // 이전/처음으로 리셋 함수
   const handleReset = () => {
-    setStep(1);
+    window.history.replaceState({}, '', window.location.pathname);
+    setIsSharedView(false);
     setUserData({
       nickname: '',
       worryType: 'light',
       optionA: '',
       optionB: '',
-      selectedOption: null
+      selectedOption: null,
+      brainMelt: 85,
+      tasteSummary: '',
+      aiResult: null
     });
+    setStep(1);
   };
 
-  // Page2_Input에서 제출 시 데이터를 받고 적절한 단계로 이동
-  const handleInputSubmit = (formData) => {
+  // 🤖 Page2_Input에서 제출 시: 브릿지 화면으로 넘어가면서 백그라운드 AI 호출 시작
+  const handleInputSubmit = async (formData) => {
     setUserData((prev) => ({ ...prev, ...formData }));
 
-    // worryType에 따라 이동하는 step 지정
+    // 1. 화면은 브릿지 페이지로 먼저 이동
     if (formData.worryType === 'light') {
-      setStep(4); // ExtraPage2 (가벼운 고민 흐름 진입)
+      setStep(4); // ExtraPage2
     } else {
-      setStep(6); // ExtraPage3 (무거운 고민 흐름 진입)
+      setStep(6); // ExtraPage3
+    }
+
+    // 2. 브릿지 화면을 보고 있는 동안 백그라운드에서 AI 요청
+    try {
+      const aiData = await getTastingAnalysis(
+        formData.optionA,
+        formData.optionB,
+        formData.worryType
+      );
+
+      // 3. 분석 결과를 userData에 보관
+      setUserData((prev) => ({
+        ...prev,
+        aiResult: aiData
+      }));
+    } catch (err) {
+      console.error('AI 분석 실패:', err);
     }
   };
 
@@ -72,37 +121,35 @@ function App() {
         {step === 6 && <ExtraPage3 onNext={handleNext} />}
         {step === 7 && <ExtraPage3_1 onNext={() => setStep(8)} />}
 
-        {/* 8. 메뉴판 화면 (worryType 전달받아 배경 전환 및 선택 메뉴 데이터 수신) */}
+        {/* 8. 메뉴판 화면 */}
         {step === 8 && (
           <Page3_Menu
             userData={userData}
             onNext={(selectedData) => {
-              // selectedData = { selectedOption: '선택한 메뉴명', brainMelt: 숫자수치 }
-              setUserData((prev) => ({
-                ...prev,
-                selectedOption: selectedData.selectedOption,
-                brainMelt: selectedData.brainMelt
-              }));
-              setStep(9); // 바로 Page4_Receipt(영수증) 단계로 이동
+              if (typeof selectedData === 'object' && selectedData !== null) {
+                setUserData((prev) => ({
+                  ...prev,
+                  selectedOption: selectedData.selectedOption,
+                  brainMelt: selectedData.brainMelt,
+                  tasteSummary: selectedData.tasteSummary
+                }));
+              } else {
+                setUserData((prev) => ({
+                  ...prev,
+                  selectedOption: selectedData,
+                  brainMelt: selectedData === prev.optionB ? 15 : 85
+                }));
+              }
+              setStep(9); // Page4_Receipt(영수증) 단계로 이동
             }}
           />
         )}
 
-        {/* 9. 메뉴 상세보기 (Page4) */}
-        {/*step === 9 && (
-          <Page4_Detail
-            userData={userData}
-            onNext={(selected) => {
-              setUserData((prev) => ({ ...prev, selectedOption: selected }));
-              setStep(10);
-            }}
-          />
-        )*/}
-
-        {/* 10. 영수증 및 공유하기 (Page5) */}
+        {/* 9. 영수증 및 공유하기 */}
         {step === 9 && (
           <Page4_Receipt
             userData={userData}
+            isSharedView={isSharedView}
             onReset={handleReset}
           />
         )}
