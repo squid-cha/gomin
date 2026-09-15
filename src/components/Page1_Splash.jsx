@@ -24,7 +24,7 @@ function Page1_Splash({ onNext }) {
             {/* 중앙 로고 아이콘 상자 */}
             <div style={{ width: 110, height: 110, left: 125, top: 232, position: 'absolute', background: 'white', borderRadius: 30 }} />
             <div style={{ width: 136, left: 112, top: 257, position: 'absolute', textAlign: 'center', justifyContent: 'center', display: 'flex', flexDirection: 'column', color: '#AE8E00', fontSize: 26, fontFamily: 'Noto Sans KR', fontWeight: '700', lineHeight: '30px', wordWrap: 'break-word' }}>
-                고민<br />미식회
+                민<br />미식회
             </div>
 
             {/* 메인 문구 영역 */}
